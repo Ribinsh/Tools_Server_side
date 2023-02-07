@@ -5,7 +5,7 @@ export const adminLogin = (req ,res) => {
     let adminMail = 'admin@gmail.com'
     let adminPassword = "admin1234"
 
-   
+  
     
     if(email==adminMail){
        
