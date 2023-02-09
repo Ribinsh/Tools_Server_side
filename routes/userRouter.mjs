@@ -1,6 +1,6 @@
 
 import express from "express"
-import { doLogin, sendOtp, verifyOtp } from "../controller/user/auth.mjs";
+import { authToken, doLogin, sendOtp, tokenCheck, verifyOtp } from "../controller/user/auth.mjs";
 
 const router = express.Router();
 
@@ -18,6 +18,12 @@ router
 router 
         .route("/doLogin")
         .post(doLogin)
+
+
+router 
+        .route("/tokencheck")
+        .get(authToken,tokenCheck)
+
 
 
 
