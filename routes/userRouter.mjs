@@ -1,39 +1,27 @@
-
-import express from "express"
-import { authToken, doLogin, sendOtp, tokenCheck, verifyOtp } from "../controller/user/auth.mjs";
+import express from "express";
+import {
+  authToken,
+  doLogin,
+  resendOtp,
+  sendOtp,
+  tokenCheck,
+  verifyOtp,
+} from "../controller/user/auth.mjs";
+import { toBookProduct } from "../controller/user/userController.mjs";
 
 const router = express.Router();
 
+router.route("/sendOtp").post(sendOtp);
+
+router.route("/verifyOtp").post(verifyOtp);
+
+router.route("/resendOtp").get(resendOtp);
+
+router.route("/doLogin").post(doLogin);
+
+router.route("/tokencheck").get(authToken, tokenCheck);
+
+router.route("/toBookProduct").post(authToken,toBookProduct);
 
 
-router
-        .route("/sendOtp")
-        .post(sendOtp)
-
-
-router  
-        .route("/verifyOtp")
-        .post(verifyOtp)
-
-router 
-        .route("/doLogin")
-        .post(doLogin)
-
-
-router 
-        .route("/tokencheck")
-        .get(authToken,tokenCheck)
-
-
-
-
-
-// router.post('/signin',controller.doLogin);
-// router.post('/otp',controller.sendOtp);
-// router.post('/resend',controller.resendOtp)
-// router.post('/verify', controller.verify)
-
-
-
-
-export default  router;
+export default router;

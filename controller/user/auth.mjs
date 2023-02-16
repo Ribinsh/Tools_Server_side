@@ -108,7 +108,7 @@ export const verifyOtp = async (req,res)=>{
 
 export const doLogin = async(req , res) => {
     console.log(req.body);
-    const {email, password} =req.body;
+    const {email, password} =req.body.values;
     try {
         const user = await userModel.findOne({$and:[{email :email} , {status: "Unblocked"}]});
         console.log(user);
@@ -144,13 +144,15 @@ export const doLogin = async(req , res) => {
 
     export const authToken = (req,res,next)=>{
         const authHeader = req.headers['authorization']
+        
        try{
-        // console.log(req.headers.authorization);
+        console.log(req.headers.authorization);
            const token = authHeader && authHeader.split(" ")[1] 
-           if(!token) return res.sendStatus(401)
+           console.log("111"+token);
+           if(!token) return  res.status(400).send({ status:false, error: "No token"});
 
            jwt.verify(token,process.env.ACCESS_TOKEN_SECRET, (err,userName) =>{
-            if(err) return res.sendStatus(403)
+            if(err) return  res.status(400).send({ status:false, error: "Token not Match"});
             req.user = userName
             next()
            })
@@ -168,21 +170,23 @@ export const doLogin = async(req , res) => {
     res.json({data:name})
   }     
 
-// resendOtp : () => {
-//     var mailOptions={
-//         to: Email,
-//        subject: "Otp for registration is: ",
-//        html: "<h3>OTP for account verification is </h3>"  + "<h1 style='font-weight:bold;'>" + otp +"</h1>" // html body
-//      };
 
-//      transporter.sendMail(mailOptions, (error, info) => {
-//         if (error) {
-//             return console.log(error);
-//         }
-//         console.log('Message sent: %s', info.messageId);
-//         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-//         res.render('otp',{msg:"otp has been sent"});
-//     });
 
-// },
+ export  const resendOtp = (req , res) => {
+    var mailOptions={
+        to: Email,
+       subject: "Otp for registration is: ",
+       html: "<h3>OTP for account verification is </h3>"  + "<h1 style='font-weight:bold;'>" + otp +"</h1>" // html body
+     };
+
+     transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            res.status(400).send({ status:false, error: "Server Issue"});
+        }
+        console.log('Message sent: %s', info.messageId);
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        res.json({status:"success"})
+    });
+
+}
 
