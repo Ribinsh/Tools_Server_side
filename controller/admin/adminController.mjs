@@ -22,12 +22,13 @@ export const adminLogin = (req, res) => {
 export const addCategory = async (req, res) => {
   console.log(req.body);
 
-  const { categoryName, description, imageUrl } = req.body;
+  const { categoryName, description, imageUrl,works } = req.body;
 
   try {
     const newCategory = categoryModel({
       categoryName,
       description,
+      work:works,
       imageUrl,
     });
 

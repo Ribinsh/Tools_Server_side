@@ -190,3 +190,24 @@ export const doLogin = async(req , res) => {
 
 }
 
+
+export const forgotPassword = (req , res) =>{
+
+}
+
+
+export const changePassword = async (req ,res ) => {
+         try {
+            const { newPassword, email } = req.body;
+            const password = await bcrypt.hash(newPassword, 10)
+    
+            await userModel.findOneAndUpdate({ email }, { $set: { password: password } }).then((result) => {
+                if (!result) return res.sendStatus(404)
+                res.sendStatus(202)
+            })
+    
+        } catch (error) {
+            res.status(400).send({ status:false, error: "Server issue"})
+        }
+}
+

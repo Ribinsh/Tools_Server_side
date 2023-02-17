@@ -18,6 +18,10 @@ const categorySchema = new mongoose.Schema({
     products : {
         type: Number,
         default : 0
+    },
+    work : {
+        type:Array,
+       
     }
 
 })
