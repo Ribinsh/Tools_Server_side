@@ -7,7 +7,7 @@ import {
   tokenCheck,
   verifyOtp,
 } from "../controller/user/auth.mjs";
-import { toBookProduct } from "../controller/user/userController.mjs";
+import { featuredProduct, getAllProduct, premiumProduct, singleView, toBookProduct } from "../controller/user/userController.mjs";
 
 const router = express.Router();
 
@@ -22,6 +22,16 @@ router.route("/doLogin").post(doLogin);
 router.route("/tokencheck").get(authToken, tokenCheck);
 
 router.route("/toBookProduct").post(authToken,toBookProduct);
+
+router.route("/featuredProduct").get(featuredProduct);
+
+router.route("/premiumProduct").get(premiumProduct)
+
+router.route("/getAllProduct").get(getAllProduct)
+
+router.route("/singleView/:productId").get(singleView)
+
+
 
 
 export default router;

@@ -40,7 +40,19 @@ const userSchema = new mongoose.Schema({
 
         type: String,
         default : 'Not added'
-        }
+        },
+
+       joined : {
+        type :Date,
+        default : Date.now()
+       },
+       
+       rentings: {
+        type: Number,
+        default: 0
+       }
+
+
         
     
 })
