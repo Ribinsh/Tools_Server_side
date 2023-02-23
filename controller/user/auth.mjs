@@ -1,4 +1,5 @@
 import userModel from "../../model/user/userModel.mjs";
+import { authToken } from "../../middlewares/authMiddleware.mjs";
 import nodemailer from "nodemailer";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
@@ -110,26 +111,29 @@ export const doLogin = async(req , res) => {
     console.log(req.body);
     const {email, password} =req.body.values;
     try {
-        const user = await userModel.findOne({$and:[{email :email} , {status: "Unblocked"}]});
-        console.log(user);
-       
-                                                                        
-            
+        const user = await userModel.findOne({email :email});
+        
         if(!user) {
             res.status(400).send({ status:false, error:"Not a user" });
             console.log("No Email");
         } else{
-            const isMatch = await bcrypt.compare(password,user.password);
-    
-            if(!isMatch){
-                res.status(400).send({ status:false, error: "Incorrect password"});
-                console.log("incorrect password");
-            }else{
-                
-                const userName = user.name;     
-                  const token = jwt.sign({userName:userName},process.env.ACCESS_TOKEN_SECRET,{expiresIn: "24h"})
-                res.status(200).send({ status: true , userName, token });
-            }
+          const blocked = await userModel.findOne({$and:[{email :email} , {status: "Blocked"}]});
+                if(blocked){
+                  res.status(400).send({ status:false, error:"User is Blocked!" });
+                } else{
+
+                  const isMatch = await bcrypt.compare(password,user.password);
+          
+                  if(!isMatch){
+                      res.status(400).send({ status:false, error: "Incorrect password"});
+                      console.log("incorrect password");
+                  }else{
+                      const userName = user.name
+                      const userId = user._id;     
+                        const token = jwt.sign({userId:userId},process.env.ACCESS_TOKEN_SECRET,{expiresIn: "24h"})
+                      res.status(200).send({ status: true , userName, token });
+                  }
+                }
         }
     } catch(error){
         res.status(400).send({ status:false, error: "Server Issue"});
@@ -142,26 +146,6 @@ export const doLogin = async(req , res) => {
 }
 
 
-    export const authToken = (req,res,next)=>{
-        const authHeader = req.headers['authorization']
-        
-       try{
-        console.log(req.headers.authorization);
-           const token = authHeader && authHeader.split(" ")[1] 
-           console.log("111"+token);
-           if(!token) return  res.status(400).send({ status:false, error: "No token"});
-
-           jwt.verify(token,process.env.ACCESS_TOKEN_SECRET, (err,userName) =>{
-            if(err) return  res.status(400).send({ status:false, error: "Token not Match"});
-            req.user = userName
-            next()
-           })
-          
-       }catch (error){
-            next(error)
-       }
-
-       } 
 
 
   export const tokenCheck = (req ,res) =>{
@@ -191,23 +175,66 @@ export const doLogin = async(req , res) => {
 }
 
 
-export const forgotPassword = (req , res) =>{
 
-}
 
 
 export const changePassword = async (req ,res ) => {
          try {
             const { newPassword, email } = req.body;
-            const password = await bcrypt.hash(newPassword, 10)
+            console.log(req.body);
+
+            const user = await userModel.findOne({email :email});
+        
+            if(!user) {
+                res.status(400).send({ status:false, error:"Not a user" });
+              
+            } else{
+              const blocked = await userModel.findOne({$and:[{email :email} , {status: "Blocked"}]});
+                    if(blocked){
+                      res.status(400).send({ status:false, error:"User is Blocked!" });
+                    } else{
+                      const password = await bcrypt.hash(newPassword, 10)
     
-            await userModel.findOneAndUpdate({ email }, { $set: { password: password } }).then((result) => {
-                if (!result) return res.sendStatus(404)
-                res.sendStatus(202)
-            })
+                      await userModel.findOneAndUpdate({ email }, { $set: { password: password } }).then((result) => {
+                          if (!result) return res.sendStatus(404)
+                          res.sendStatus(202)
+                      })
+                    }
+    
+           }
+           
     
         } catch (error) {
             res.status(400).send({ status:false, error: "Server issue"})
         }
 }
+
+
+export const forgotPassword = async(req , res) =>{
+  console.log(req.body);
+       let email = req.body.email
+      console.log(email);
+       try{
+        const user = await userModel.findOne({email :email});
+        
+        if(!user) {
+            res.status(400).send({ status:false, error:"Not a user" });
+          
+        } else{
+          const blocked = await userModel.findOne({$and:[{email :email} , {status: "Blocked"}]});
+                if(blocked){
+                  res.status(400).send({ status:false, error:"User is Blocked!" });
+                } else{
+                   res.status(200).send({status:"success"})
+                }
+
+       }
+    }catch(error){
+      res.status(400).send({ status:false, error: "Server issue"})
+
+    }
+ }
+
+
+ 
 

@@ -1,13 +1,16 @@
 import express from "express";
 import {
-  authToken,
+  
+  changePassword,
   doLogin,
+  forgotPassword,
   resendOtp,
   sendOtp,
   tokenCheck,
   verifyOtp,
 } from "../controller/user/auth.mjs";
-import { featuredProduct, getAllProduct, premiumProduct, singleView, toBookProduct } from "../controller/user/userController.mjs";
+import { bookProduct, featuredProduct, getAllProduct, getBooking, premiumProduct, singleView, toBookProduct } from "../controller/user/userController.mjs";
+import { authToken } from "../middlewares/authMiddleware.mjs";
 
 const router = express.Router();
 
@@ -27,9 +30,17 @@ router.route("/featuredProduct").get(featuredProduct);
 
 router.route("/premiumProduct").get(premiumProduct)
 
-router.route("/getAllProduct").get(getAllProduct)
+router.route("/getAllProduct").get(authToken, getAllProduct)
 
-router.route("/singleView/:productId").get(singleView)
+router.route("/singleView/:productId").get( singleView)
+
+// router.route("/forgotPassword").post(forgotPassword)
+
+router.route("/changePassword").post(changePassword)
+
+router.route("/bookProduct").post(authToken, bookProduct)
+
+router.route("/getBooking").get(authToken,getBooking)
 
 
 

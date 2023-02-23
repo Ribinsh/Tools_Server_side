@@ -42,7 +42,7 @@ export const addCategory = async (req, res) => {
 
 export const getCategories = async (req, res) => {
   const catogories = await categoryModel.find();
-  console.log(catogories);
+  
 
   res.status(200).send({ status: true, catogories });
 };
@@ -118,4 +118,24 @@ export const unBlockUser =async (req,res)=>{
     res.status(200).send({ status: true });
 
 
+}
+
+export const listProduct =async (req,res) => {
+      const productId = req.params.productId
+     try{
+      await productModel.findByIdAndUpdate({_id:productId},{$set:{listingStatus: "List"}})
+      res.status(200).send({ status: true });
+     }catch(error){
+      res.status(400).send({status:false, error})
+     }
+}
+
+export const unlistProduct =async (req,res) => {
+  const productId = req.params.productId
+ try{
+  await productModel.findByIdAndUpdate({_id:productId},{$set:{listingStatus: "Unlist"}})
+  res.status(200).send({ status: true });
+ }catch(error){
+  res.status(400).send({status:false, error})
+ }
 }
