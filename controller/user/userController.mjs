@@ -10,37 +10,33 @@ export const toBookProduct = (req , res) => {
     res.json({status:"success"})
 }
 
-export const featuredProduct = async(req, res) =>{
-    try{
 
-        const product =await productModel.find({productStatus:"featured"})
-        res.status(200).send({ status: true , product });
-    }catch(error){
-        res.status(400).send({ status: false ,data:"Server Issue" });
-    }
-}
 
-export const premiumProduct = async(req, res) =>{
-    const product =await productModel.find({productStatus:"premium"})
-    res.status(200).send({ status: true , product });
-}
 
-export const getAllProduct = async(req, res) =>{
-    const product =await productModel.find()
-    res.status(200).send({ status: true , product });
-}
 
 export const singleView = async(req , res)=>{
         const productId = req.params.productId
-         const product = await productModel.findOne({_id:productId})
-         res.status(200).send({ status: true , product });
+      
+        try{
+
+            const product = await productModel.findOne({_id:productId})
+           
+            res.status(200).send({ status: true , product ,  })
+           
+        }catch(error){
+            res.status(400).send({status:false , error: error})
+        }
 
 }
+
+
 
 export const bookProduct = async (req, res) => {
  
     const {userId} = req.userId
        const {productId , totalPrice , dates} = req.body
+       console.log(dates);
+      
       const totalDays = dates.length;
            try{
         const newOrder =  new orderModel ({
@@ -55,7 +51,7 @@ export const bookProduct = async (req, res) => {
          let savedDate = await  datesModel.findOne({productId})
 
          if(savedDate){
-            await datesModel.updateOne({productId} , {$push: { "dates": { "$each": ["$dates"] }}}).then(() =>{
+            await datesModel.updateOne({productId} , {$push: { "dates":  dates   }}).then(() =>{
                 console.log("old addeed");
                 res.send({status:true })
             })
@@ -76,18 +72,13 @@ export const bookProduct = async (req, res) => {
 
 }
 
-export const getBooking = async (req ,res) =>{
-    const {userId} = req.userId
-    try{
 
-        let allOrders = await orderModel.find({userId}).populate("productId")
-        
-        if(allOrders === null){ 
-            res.status(404).send({staus:false ,  error: " No orders yet"})}
-        else{
-           res.status(200).send({status:true , allOrders})
-        }
-    }catch(error){
-        res.status(400).send({status: false, error:error})
-    }
+
+export const onlinePayment = async (req ,res) => {
+
+       const {orderId} = req.body 
+    await orderModel.findByIdAndUpdate({_id:orderId} , {$set:{paymentStatus: "Paid"}}).then(()=> {
+        res.status(200).send({status:true })
+    })
+
 }

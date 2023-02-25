@@ -40,12 +40,7 @@ export const addCategory = async (req, res) => {
   }
 };
 
-export const getCategories = async (req, res) => {
-  const catogories = await categoryModel.find();
-  
 
-  res.status(200).send({ status: true, catogories });
-};
 
 export const addProduct = async (req, res) => {
   console.log(req.body);
@@ -139,3 +134,4 @@ export const unlistProduct =async (req,res) => {
   res.status(400).send({status:false, error})
  }
 }
+

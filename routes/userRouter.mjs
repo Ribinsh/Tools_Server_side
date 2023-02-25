@@ -1,15 +1,17 @@
 import express from "express";
+import { getBookings, getDates } from "../controller/orders/orderController.mjs";
+import {  featuredProducts, getAllProducts, premiumProducts } from "../controller/products/productController.mjs";
 import {
   
   changePassword,
   doLogin,
-  forgotPassword,
+ 
   resendOtp,
   sendOtp,
   tokenCheck,
   verifyOtp,
 } from "../controller/user/auth.mjs";
-import { bookProduct, featuredProduct, getAllProduct, getBooking, premiumProduct, singleView, toBookProduct } from "../controller/user/userController.mjs";
+import { bookProduct, onlinePayment, singleView, toBookProduct } from "../controller/user/userController.mjs";
 import { authToken } from "../middlewares/authMiddleware.mjs";
 
 const router = express.Router();
@@ -26,13 +28,15 @@ router.route("/tokencheck").get(authToken, tokenCheck);
 
 router.route("/toBookProduct").post(authToken,toBookProduct);
 
-router.route("/featuredProduct").get(featuredProduct);
+router.route("/featuredProduct").get(featuredProducts);
 
-router.route("/premiumProduct").get(premiumProduct)
+router.route("/premiumProduct").get(premiumProducts)
 
-router.route("/getAllProduct").get(authToken, getAllProduct)
+router.route("/getAllProduct").get(authToken, getAllProducts)
 
 router.route("/singleView/:productId").get( singleView)
+
+router.route("/getDates/:productId").get( getDates)
 
 // router.route("/forgotPassword").post(forgotPassword)
 
@@ -40,7 +44,9 @@ router.route("/changePassword").post(changePassword)
 
 router.route("/bookProduct").post(authToken, bookProduct)
 
-router.route("/getBooking").get(authToken,getBooking)
+router.route("/getBooking").get(authToken,getBookings)
+
+router.route("/payAmount").post(authToken,onlinePayment)
 
 
 
