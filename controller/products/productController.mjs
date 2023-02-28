@@ -3,7 +3,7 @@ import productModel from "../../model/user/productModel.mjs";
 export const getAllProducts = async(req, res) =>{
     try{
 
-        const product =await productModel.find()
+        const product =await productModel.find({listingStatus: "List"})
         res.status(200).send({ status: true , product });
     }catch(error){
         res.status(400).send({ status: false , error:"server issue" });

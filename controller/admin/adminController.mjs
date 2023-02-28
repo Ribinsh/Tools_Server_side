@@ -68,8 +68,11 @@ export const addProduct = async (req, res) => {
       productStatus: productStatus,
       imageUrl: imageUrl,
     });
-    await newProduct.save().then(() => {
-      res.json({ status: "success" });
+    await newProduct.save().then(async() => {
+     await categoryModel.findOneAndUpdate({categoryName:category} , {$inc:{"products":1}}).then(()=>{
+
+       res.json({ status: "success" });
+     })
     });
   } catch (error) {
     res.status(400).send({ status: false, error: "Server Issue" });

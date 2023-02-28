@@ -1,6 +1,7 @@
 import express from "express";
 import { addCategory, addProduct, adminLogin, blockUser, getUserData, getUsers, listProduct, unBlockUser, unlistProduct } from "../controller/admin/adminController.mjs";
 import { getCategories } from "../controller/categories/categoryController.mjs";
+import { getAllOrders } from "../controller/orders/orderController.mjs";
 import { getAllProducts } from "../controller/products/productController.mjs";
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router.route("/unBlockUser/:userId").get(unBlockUser)
 router.route("/listProduct/:productId").get(listProduct)
 router.route("/unlistProduct/:productId").get(unlistProduct)
 router.route("/getAllproducts").get(getAllProducts)
+router.route("/getAllBookings").get(getAllOrders)
 
 
 
