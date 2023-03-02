@@ -75,10 +75,16 @@ export const bookProduct = async (req, res) => {
 
 
 export const onlinePayment = async (req ,res) => {
+     try{
 
-       const {orderId} = req.body 
-    await orderModel.findByIdAndUpdate({_id:orderId} , {$set:{paymentStatus: "Paid"}}).then(()=> {
-        res.status(200).send({status:true })
-    })
+         const {orderId} = req.body 
+      await orderModel.findByIdAndUpdate({_id:orderId} , {$set:{paymentStatus: "Paid"}}).then(()=> {
+          res.status(200).send({status:true })
+      })
+     }catch(error){
+        res.status(400).send({status:false , error: "Server Issue"})
+       }
+
 
 }
+

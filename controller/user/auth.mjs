@@ -148,10 +148,21 @@ export const doLogin = async(req , res) => {
 
 
 
-  export const tokenCheck = (req ,res) =>{
-    let name = req.user
+  export const checkUser = async(req ,res) =>{
 
-    res.json({data:name})
+    let {userId} =  req.userId
+    
+    try{
+
+      const user =  await userModel.findOne({_id:userId})
+        res.status(200).send({status:true, user})
+      
+    }catch(error){
+          console.log(error);
+    }
+
+
+    
   }     
 
 

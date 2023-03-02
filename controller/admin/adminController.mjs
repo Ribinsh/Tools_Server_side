@@ -1,4 +1,5 @@
 import categoryModel from "../../model/admin/categoryModel.mjs";
+import orderModel from "../../model/user/orderModel.mjs";
 import productModel from "../../model/user/productModel.mjs";
 import userModel from "../../model/user/userModel.mjs";
 
@@ -138,3 +139,106 @@ export const unlistProduct =async (req,res) => {
  }
 }
 
+export const offlinePayment = async (req ,res) => {
+  console.log(req.body);
+try{
+
+    const {orderId} = req.body 
+    console.log(orderId);
+    
+ await orderModel.findByIdAndUpdate({_id:orderId} , {$set:{paymentStatus: "Paid"}}).then(()=> {
+     res.status(200).send({status:true })
+ })
+}catch(error){
+  res.status(400).send({status:false , error: "Server Issue"})
+ }
+
+
+}
+
+export const changeOrderStatus =async (req ,res) => {
+      let value = req.body.update
+      let orderId = req.body.orderId
+      const order = await orderModel.findById({_id:orderId})
+      const userId = order.userId
+      const productId = order.productId
+      try{
+
+        if(value === "Canceled"){
+          await orderModel.findByIdAndUpdate({_id:orderId},{$set:{orderStatus: value}}).then(()=>{
+            res.status(200).send({status:true})
+          
+          })
+        }else if(value ===  "Renting"){
+          await orderModel.findByIdAndUpdate({_id:orderId},{$set:{orderStatus : value}})
+          await productModel.findByIdAndUpdate({_id:productId},{$set : {rentingStatus : value}}).then(()=>{
+            res.status(200).send({status:true})
+          })
+        }else if(value === "Pending"){
+          await orderModel.findByIdAndUpdate({_id:orderId},{$set:{orderStatus: value}}).then(()=>{
+            res.status(200).send({status:true})
+          })
+        }else if(value === "Completed"){
+          await orderModel.findByIdAndUpdate({_id:orderId},{$set:{orderStatus: value , paymentStatus: "Paid"}}) 
+            
+          await productModel.findByIdAndUpdate({_id:productId},{$inc:{totalRentings: 1 , totalEarning : order.totalPrice}, $set:{rentingStatus:"Store"}})
+         
+            await userModel.findByIdAndUpdate({_id:userId},{$inc:{renting:1}})
+    
+          .then(() => {
+            res.status(200).send({status:true})
+          })
+     
+        }else{
+          res.status(400).send({status:false , error: "Something went wrong"})
+        }
+
+
+
+
+
+        // switch (value) {
+        //   case "Canceled":
+        //     await orderModel.findByIdAndUpdate({_id:orderId},{$set:{orderStatus: value}}).then(()=>{
+        //       res.status(200).send({status:true})
+        //     })
+        //    break;
+
+
+        //   case "Renting":
+        //     await orderModel.findByIdAndUpdate({_id:orderId},{$set:{orderStatus : value}})
+        //       await productModel.findByIdAndUpdate({_id:productId},{$set : {rentingStatus : value}}).then(()=>{
+        //         res.status(200).send({status:true})
+        //       })
+         
+        //      break;
+
+
+        //   case "Pending":
+        //     await orderModel.findByIdAndUpdate({_id:orderId},{$set:{orderStatus: value}}).then(()=>{
+        //       res.status(200).send({status:true})
+        //     
+        //     break;
+
+        //   case "Completed":
+        //     await orderModel.findByIdAndUpdate({_id:orderId},{$set:{orderStatus: value}}) 
+            
+        //       await productModel.findByIdAndUpdate({_id:productId},{$inc:{totalRentings: 1 , totalEarning : order.totalPrice}, $set:{rentingStatus:"store"}})
+             
+        //         await userModel.findByIdAndUpdate({_id:userId},{$inc:{renting:1}})
+        
+        //       .then(() => {
+        //         res.status(200).send({status:true})
+        //       })
+         
+        //       break;
+  
+
+        //   default:
+        //     res.status(400).send({status:false , error: "Something went wrong"})
+        // }
+       
+      }catch(error){
+  res.status(400).send({status:false , error: "Server Issue"})
+ }
+}

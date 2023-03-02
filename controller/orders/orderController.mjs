@@ -16,6 +16,26 @@ export const getAllOrders = async(req ,res)=> {
       }
 }
 
+export const getAllOrdersForCalender = async(req ,res)=> {
+    try{
+
+        let completed = "Completed"
+        let rent = "Renting"
+        
+      let allOrders = await orderModel.find({orderStatus:{$nin:[completed, rent]} }).populate("userId").populate("productId")
+      if(allOrders){
+          allOrders.reverse()
+          res.status(200).send({status:true, allOrders})
+      }else{
+         res.status(400).send({status:false, error:"No Bookings"}) 
+      }
+    }catch(error){
+      res.status(400).send({ status: false ,  error:" Server Issue" })
+    }
+}
+
+
+
 export const getBookings = async (req ,res) =>{
     const {userId} = req.userId
     try{
@@ -58,3 +78,21 @@ export const  getDates = async(req ,res) =>{
     }
 
 } 
+
+
+export const getOrderDetails =async(req,res) => {
+   const orderId = req.params.orderId
+   
+   try{
+    let order = await orderModel.findById({_id:orderId}).populate("userId").populate("productId")
+
+    if(order){
+        res.status(200).send({status:true , order})
+    }else{
+        res.status(400).send({status:false, error:"No Order Found"})
+    }
+
+   } catch(error){
+        res.status(400).send({ status: false ,  error:" Server Issue" })
+    }
+}

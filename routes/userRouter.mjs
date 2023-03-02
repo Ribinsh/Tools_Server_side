@@ -4,11 +4,12 @@ import {  featuredProducts, getAllProducts, premiumProducts } from "../controlle
 import {
   
   changePassword,
+  checkUser,
   doLogin,
  
   resendOtp,
   sendOtp,
-  tokenCheck,
+
   verifyOtp,
 } from "../controller/user/auth.mjs";
 import { bookProduct, onlinePayment, singleView, toBookProduct } from "../controller/user/userController.mjs";
@@ -24,7 +25,7 @@ router.route("/resendOtp").get(resendOtp);
 
 router.route("/doLogin").post(doLogin);
 
-router.route("/tokencheck").get(authToken, tokenCheck);
+router.route("/verifyUser").get(authToken, checkUser);
 
 router.route("/toBookProduct").post(authToken,toBookProduct);
 
@@ -47,6 +48,10 @@ router.route("/bookProduct").post(authToken, bookProduct)
 router.route("/getBooking").get(authToken,getBookings)
 
 router.route("/payAmount").post(authToken,onlinePayment)
+
+
+
+
 
 
 
