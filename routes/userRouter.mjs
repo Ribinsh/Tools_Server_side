@@ -12,7 +12,7 @@ import {
 
   verifyOtp,
 } from "../controller/user/auth.mjs";
-import { bookProduct, onlinePayment, singleView, toBookProduct } from "../controller/user/userController.mjs";
+import { bookProduct, onlinePayment, singleView, toBookProduct, userProfile } from "../controller/user/userController.mjs";
 import { authToken } from "../middlewares/authMiddleware.mjs";
 
 const router = express.Router();
@@ -39,7 +39,7 @@ router.route("/singleView/:productId").get( singleView)
 
 router.route("/getDates/:productId").get( getDates)
 
-// router.route("/forgotPassword").post(forgotPassword)
+router.route("/getProfile").get(authToken,userProfile)
 
 router.route("/changePassword").post(changePassword)
 

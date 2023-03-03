@@ -88,3 +88,18 @@ export const onlinePayment = async (req ,res) => {
 
 }
 
+
+export const userProfile =async (req ,res) => {
+    const {userId} = req.userId
+    try{
+         await userModel.findById({_id:userId}).then((response) => {
+               console.log(response);
+               let userData = response
+               console.log(userData);
+            res.status(200).send({status: true, userData})
+        })
+        
+    }catch(error){
+       res.status(400).send({status:false , error: "server issue"})
+    }
+}
