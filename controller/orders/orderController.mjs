@@ -87,10 +87,10 @@ export const getOrderDetails =async(req,res) => {
     let order = await orderModel.findById({_id:orderId}).populate("userId").populate("productId")
 
     if(order){
+
         res.status(200).send({status:true , order})
-    }else{
-        res.status(400).send({status:false, error:"No Order Found"})
     }
+   
 
    } catch(error){
         res.status(400).send({ status: false ,  error:" Server Issue" })
