@@ -24,6 +24,7 @@ import {
 import {
   getCategories,
   getCategoryName,
+  getDaySaleReport,
   singleCategory,
 } from "../controller/categories/categoryController.mjs";
 import {
@@ -62,5 +63,6 @@ router.route("/getTotalProducts").get(totalProducts);
 router.route("/lastSales").get(daySales);
 router.route("/lastBookings").get(getgrandOrder);
 router.route("/getSingleCategory/:Id").get(singleCategory);
+router.route("/getDaySales").post(getDaySaleReport)
 
 export default router;
