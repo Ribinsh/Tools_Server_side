@@ -352,7 +352,7 @@ export const getMonthSales = async (req, res) => {
       {
         $match: {
           date: {
-            $gte: new Date(new Date().getTime() - 20 * 24 * 60 * 60 * 1000), // Date 20 days ago
+            $gte: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000), // Date 30 days ago
             $lte: new Date(), // Today's date
           },
         },
@@ -372,12 +372,47 @@ export const getMonthSales = async (req, res) => {
     ]);
     const sales = monthOrder[0].totalSales;
   
-    console.log(sales);
+    
     res.status(200).send({ status: true, sales });
   }catch(error){
     res.status(400).send({ status: false, error: "Server Issue" });
   }
 };
+
+export const getMonthOrders = async (req, res) => {
+  try{
+
+    const monthOrder = await orderModel.aggregate([
+      {
+        $match: {
+          date: {
+            $gte: new Date(new Date().getTime() - 20 * 24 * 60 * 60 * 1000), // Date 30 days ago
+            $lte: new Date(), // Today's date
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          count: 1,
+        },
+      },
+    ]);
+    const orders = monthOrder[0].count;
+  
+    
+    res.status(200).send({ status: true, orders });
+  }catch(error){
+    res.status(400).send({ status: false, error: "Server Issue" });
+  }
+};
+
 
 export const totalSales = async (req, res) => {
    try{

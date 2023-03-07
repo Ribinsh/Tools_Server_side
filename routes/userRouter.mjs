@@ -21,6 +21,7 @@ import {
   onlinePayment,
   singleView,
   toBookProduct,
+  updateProfile,
   userProfile,
 } from "../controller/user/userController.mjs";
 import { authToken } from "../middlewares/authMiddleware.mjs";
@@ -58,5 +59,7 @@ router.route("/bookProduct").post(authToken, bookProduct);
 router.route("/getBooking").get(authToken, getBookings);
 
 router.route("/payAmount").post(authToken, onlinePayment);
+
+router.route("/updateProfile/:userId").post(authToken,updateProfile)
 
 export default router;

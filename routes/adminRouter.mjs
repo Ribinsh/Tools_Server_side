@@ -7,6 +7,7 @@ import {
   changeOrderStatus,
   daySales,
   getgrandOrder,
+  getMonthOrders,
   getMonthSales,
   getUserData,
   getUsers,
@@ -54,6 +55,7 @@ router.route("/getOrderDetails/:orderId").get(getOrderDetails);
 router.route("/offlinePayment").post(offlinePayment);
 router.route("/changeOrderStatus").post(changeOrderStatus);
 router.route("/getMonthOrder").get(getMonthSales);
+router.route("/getMonthBooking").get(getMonthOrders);
 router.route("/getTotalSales").get(totalSales);
 router.route("/getTotalUsers").get(totalUsers);
 router.route("/getTotalProducts").get(totalProducts);

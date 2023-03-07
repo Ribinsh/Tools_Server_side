@@ -113,3 +113,44 @@ export const profileUpdate = async (req, res) => {
     res.status(400).send({ status: false, error: "server issue" });
   }
 };
+
+
+export const updateProfile = async(req, res) => {
+    let userId = req.params.userId;
+
+    const {
+        name,
+        email,
+        phone,
+        address,
+        gender,
+        imageUrl,
+    } = req.body;
+  
+    try {
+      let findUser = userModel.findById({ _id: userId });
+  
+      if (findUser) {
+        userModel
+          .findByIdAndUpdate(
+            { _id: userId },
+            {
+              name: name,
+              email: email,
+              phone: phone,
+              address: address,
+              gender: gender,
+              imageUrl: imageUrl
+             
+            }
+          )
+          .then(() => {
+            res.json({ status: "success" });
+          });
+      } else {
+        res.status(400).send({ status: false, error: "No user Data found" });
+      }
+    } catch (error) {
+      res.status(400).send({ status: false, error: "Server Issue" });
+    }
+}
